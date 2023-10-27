@@ -47,7 +47,7 @@ const PeepItem: React.FC<PeepItemProps> = ({ peep, onLike, onComment }) => {
   };
 
   return (
-    <div className="border rounded-md p-6 bg-white shadow-sm mb-4">
+    <div className="rounded-md p-6 bg-box-color shadow-sm mb-4">
       <div className="flex items-start space-x-4">
         <div className="flex-1">
           <h3 className="font-bold text-lg">{peep.user}</h3>
