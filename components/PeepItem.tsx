@@ -107,7 +107,7 @@ const PeepItem: React.FC<PeepItemProps> = ({ peep, onLike, onComment }) => {
             onClick={() =>
               onComment(peep.peepIndex, newComment, setNewComment, setComments)
             }
-            className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+            className="mt-2 bg-duck-body hover:bg-duck-eye text-duck-eye hover:text-white font-semibold py-2 px-4 rounded-md transition duration-200"
           >
             Send
           </button>
