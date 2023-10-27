@@ -10,15 +10,16 @@ interface PeepItemProps {
   onComment: (
     peepIndex: number,
     comment: string,
-    setComment: (value: string) => void
+    setCommentField: (value: string) => void,
+    setComments: React.Dispatch<React.SetStateAction<{ cid: string; comment: string }[]>>
   ) => void;
 }
 
 const PeepItem: React.FC<PeepItemProps> = ({ peep, onLike, onComment }) => {
   const [showComments, setShowComments] = useState(false);
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<{ cid: string; comment: string }[]>([]);
   const [newComment, setNewComment] = useState("");
-  const [commentContents, setCommentContents] = useState<string[]>([]);
+  const [rawComments, setRawComments] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchCommentContents = async () => {
@@ -27,7 +28,7 @@ const PeepItem: React.FC<PeepItemProps> = ({ peep, onLike, onComment }) => {
         const content = await fetchContentFromIPFS(comment.cid);
         contents.push(content);
       }
-      setCommentContents(contents);
+      setRawComments(contents);
     };
 
     if (comments.length) {
@@ -87,8 +88,8 @@ const PeepItem: React.FC<PeepItemProps> = ({ peep, onLike, onComment }) => {
           {comments.length === 0 ? (
             <div className="mt-2 text-gray-500">No comments yet</div>
           ) : (
-            commentContents.map((content, index) => (
-              <div key={comments[index].cid} className="mt-2">
+            rawComments.map((content, index) => (
+              <div key={comments[index]?.cid} className="mt-2">
                 {content}
               </div>
             ))
@@ -103,7 +104,9 @@ const PeepItem: React.FC<PeepItemProps> = ({ peep, onLike, onComment }) => {
           ></textarea>
 
           <button
-            onClick={() => onComment(peep.peepIndex, newComment, setNewComment)}
+            onClick={() =>
+              onComment(peep.peepIndex, newComment, setNewComment, setComments)
+            }
             className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
           >
             Send

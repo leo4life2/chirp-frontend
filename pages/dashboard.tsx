@@ -78,6 +78,25 @@ export default function DashboardPage() {
       const signer = (await provider?.getSigner()) as any;
 
       await postPeep(cid, signer);
+
+      const highestPeepIndex = Math.max(...peeps.map((p) => p.peepIndex), 0); // Using a fallback of 0 for the case where there are no peeps
+      const nextPeepIndex = highestPeepIndex + 1;
+
+      // Step 3: Add the peep to the UI
+      const newPeep: Peep = {
+        cid: cid,
+        peepIndex: nextPeepIndex,
+        content: content,
+        // Assuming you also store user in Peep:
+        user: "Current User", // TODO: replace with actual user if needed
+        comments: 0, // As it's a new post, starting with 0 comments
+        likes: 0, // As it's a new post, starting with 0 likes
+        timestamp: (Date.now() / 1000).toString(), // Current timestamp in seconds. Convert to your desired format if necessary.
+      };
+
+      // Add the new peep to the start of the peeps array and update the state
+      setPeeps((prevPeeps) => [newPeep, ...prevPeeps]);
+
       console.log("Peep published successfully! IPFS CID: " + cid.toString());
       setContent("");
       alert("Peep published successfully! IPFS CID: " + cid.toString());
@@ -95,6 +114,16 @@ export default function DashboardPage() {
       // Step 2: Like the Peep using the signer
       await likePeep(peepIndex, signer);
       console.log(`Peep #${peepIndex} liked successfully!`);
+
+      // Step 3: Update the likes in the local state for immediate feedback
+      setPeeps((prevPeeps) =>
+        prevPeeps.map((peep) =>
+          peep.peepIndex === peepIndex
+            ? { ...peep, likes: peep.likes ? peep.likes + 1 : 1 }
+            : peep
+        )
+      );
+
       alert(`Peep #${peepIndex} liked successfully!`);
     } catch (error) {
       console.error("Error:", error);
@@ -104,12 +133,13 @@ export default function DashboardPage() {
 
   const comment = async (
     peepIndex: Number,
-    comment: string,
-    setComment: (value: string) => void
+    commentContent: string,
+    setCommentField: (value: string) => void,
+    setComments: React.Dispatch<React.SetStateAction<{ cid: string; comment: string }[]>>
   ) => {
     try {
       // Step 1: Post the comment to IPFS
-      const cid = await postPeepToIPFS(comment); // Assuming postPeepToIPFS can be reused for comments
+      const cid = await postPeepToIPFS(commentContent);
       console.log("Comment added to IPFS:", cid);
 
       // Step 2: Publish the CID to the smart contract as a comment on the specified peep
@@ -121,7 +151,22 @@ export default function DashboardPage() {
         "Comment published successfully! IPFS CID: " + cid.toString()
       );
 
-      setComment(""); // Clear the comment field
+      // Update peeps state to reflect the new comment
+      setPeeps((prevPeeps) =>
+        prevPeeps.map((peep) =>
+          peep.peepIndex === peepIndex
+            ? { ...peep, comments: peep.comments ? peep.comments + 1 : 1 }
+            : peep
+        )
+      );
+
+      // Add the new comment to the local state
+      setComments((prevComments) => [
+        ...prevComments,
+        { cid: cid.toString(), comment: commentContent }, // Use the CID from IPFS here
+      ]);
+      setCommentField(""); // Clear the input field
+
       alert("Comment published successfully! IPFS CID: " + cid.toString());
     } catch (error) {
       console.error("Error:", error);
@@ -155,7 +200,12 @@ export default function DashboardPage() {
               <PeepCompose onPost={post} />
 
               {peeps.map((peep, index) => (
-                <PeepItem key={index} peep={peep} onLike={like} onComment={comment} />
+                <PeepItem
+                  key={index}
+                  peep={peep}
+                  onLike={like}
+                  onComment={comment}
+                />
               ))}
             </div>
           </>
