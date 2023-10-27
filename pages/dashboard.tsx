@@ -2,16 +2,16 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import Head from "next/head";
-import type { Peep } from "./types/Peep";
+import type { Peep } from "../types/Peep";
 import {
   fetchPeepStatsFromTheGraph,
   fetchPeepsFromTheGraph,
-} from "./services/theGraphService";
-import { fetchContentFromIPFS, postPeepToIPFS } from "./services/ipfsService";
-import { commentPeep, likePeep, postPeep } from "./services/contractService";
-import PeepItem from "./components/PeepItem";
-import PeepCompose from "./components/PeepCompose";
-import Header from "./components/Header";
+} from "../services/theGraphService";
+import { fetchContentFromIPFS, postPeepToIPFS } from "../services/ipfsService";
+import { commentPeep, likePeep, postPeep } from "../services/contractService";
+import PeepItem from "../components/PeepItem";
+import PeepCompose from "../components/PeepCompose";
+import Header from "../components/Header";
 
 export default function DashboardPage() {
   const router = useRouter();
