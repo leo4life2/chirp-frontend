@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import Head from "next/head";
@@ -16,7 +15,7 @@ import Header from "./components/Header";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { ready, authenticated, user, logout } = usePrivy();
+  const { ready, authenticated, logout } = usePrivy();
   const { wallets } = useWallets();
   const [peeps, setPeeps] = useState<Peep[]>([]);
 
