@@ -2,9 +2,11 @@ import { usePrivy } from "@privy-io/react-auth";
 import Head from "next/head";
 import Chirp from "../components/graphics/chirp";
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/router";
 
 export default function LoginPage() {
-  const { login } = usePrivy();
+  const { login, authenticated } = usePrivy();
+  const router = useRouter(); // Initialize the router hook
   const chirpRef = useRef<HTMLDivElement>(null);
 
   const handleLogin = () => {
@@ -12,7 +14,13 @@ export default function LoginPage() {
       chirpRef.current.style.animation =
         "squishAndRotate 1s ease-in-out forwards";
     }
-    setTimeout(login, 1000); // Wait for animation to complete
+    setTimeout(() => {
+      if (authenticated) {
+        router.push('/dashboard'); // Redirect to /dashboard if authenticated
+      } else {
+        login();
+      }
+    }, 1000); // Wait for animation to complete
   };
 
   useEffect(() => {

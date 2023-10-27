@@ -15,7 +15,7 @@ import Header from "../components/Header";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { ready, authenticated, logout } = usePrivy();
+  const { ready, authenticated, user, logout } = usePrivy();
   const { wallets } = useWallets();
   const [peeps, setPeeps] = useState<Peep[]>([]);
 
@@ -88,7 +88,7 @@ export default function DashboardPage() {
         peepIndex: nextPeepIndex,
         content: content,
         // Assuming you also store user in Peep:
-        user: "Current User", // TODO: replace with actual user if needed
+        user: user?.wallet?.address!,
         comments: 0, // As it's a new post, starting with 0 comments
         likes: 0, // As it's a new post, starting with 0 likes
         timestamp: (Date.now() / 1000).toString(), // Current timestamp in seconds. Convert to your desired format if necessary.
