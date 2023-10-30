@@ -2,7 +2,7 @@
 import { ethers } from "ethers";
 import contractABI from "../resources/abi.json";
 
-const contractAddress = "0x0ac1D6B0c62F35D4eaB7a29C3752aE3b303b1fcd";
+const contractAddress = "0xb43ba661483f4c19e0a45243c621ac4e0b618f3e";
 
 export const postPeep = async (cid: string, signer: ethers.Signer) => {
     const chirpContract = new ethers.Contract(contractAddress, contractABI, signer);

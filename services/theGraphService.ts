@@ -1,5 +1,5 @@
 // services/theGraphService.ts
-const QUERY_URL = "https://api.studio.thegraph.com/query/48252/chirpv2/version/latest";
+const QUERY_URL = "https://api.studio.thegraph.com/query/48252/chirpmainnet/version/latest";
 
 export const fetchPeepsFromTheGraph = async () => {
     const response = await fetch(QUERY_URL, {
